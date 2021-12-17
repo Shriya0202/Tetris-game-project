@@ -1,0 +1,229 @@
+<!-- CSS Code -->
+<style>
+    body{
+        background-color: brown;
+        display: flex;
+    }
+    .empty {
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+    }
+    .squareShape {
+        width: 50px;
+        height: 50px;
+        background-color: blue;
+        outline: 2px solid black;
+        background-image: url('tetris-piece.png');
+        display: inline-block;
+    }
+    #gamegrid {
+        background-image: url('background.png');
+        background-repeat: no-repeat;
+        margin: auto;
+    }
+    .gameOver {
+        margin: auto;
+    }
+    .refresh {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        font-size: 16px;
+        text-align: center;
+        background-color: #202021;
+        color: white;
+    }
+</style>
+
+
+<!-- HTML Code -->
+<div id='gamegrid'>
+</div>
+
+
+
+<!-- JavaScript Code: -->
+<script>
+    var gamegrid = [
+        [0,0,0,1,1,0,0,0],
+        [0,0,0,1,1,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+    ]; 
+
+    var isGameOver = false;
+    function drawGame() {
+        document.getElementById('gamegrid').innerHTML = "";
+        for(var y=0; y<gamegrid.length; y++) {
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x]=== 0){
+                    document.getElementById('gamegrid').innerHTML += "<div class='empty'></div>";
+                } else if(gamegrid[y][x]=== 1 || gamegrid[y][x]=== 11){
+                    document.getElementById('gamegrid').innerHTML += "<div class='squareShape'></div>";
+                }
+            }
+            document.getElementById('gamegrid').innerHTML += "<br>";
+        }
+    }
+
+    function moveShapesDown() {
+        canMove = true;
+        for(var y=gamegrid.length-1; y>=0; y--) {
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                    if(y+1 === gamegrid.length || gamegrid[y+1][x] > 10){
+                        canMove = false;
+                        freeze();
+                    }
+                }
+            }
+        }
+        if (canMove) {
+            for(var y=gamegrid.length-1; y>=0; y--) {
+                for(var x=0; x<gamegrid[y].length; x++) {
+                    if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                        gamegrid[y+1][x] = gamegrid[y][x];
+                        gamegrid[y][x] = 0;
+                    }
+                }
+            }
+           drawGame();
+        }
+        checkLines();  
+    }
+
+    function moveShapesLeft() {
+        canMove = true;
+        for(var y=gamegrid.length-1; y>=0; y--) {
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                    if(x === 0 || gamegrid[y][x-1] > 10){
+                        canMove = false;
+                    }
+                }
+            }
+        }
+        if (canMove) {
+            for(var y=gamegrid.length-1; y>=0; y--) {
+                for(var x=0; x<gamegrid[y].length; x++) {
+                    if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                        gamegrid[y][x-1] = gamegrid[y][x];
+                        gamegrid[y][x] = 0;
+                    }
+                }
+            }
+           drawGame();
+        }
+    }
+
+    function moveShapesRight() {
+        canMove = true;
+        for(var y=gamegrid.length-1; y>=0; y--) {
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                    if(x === 7 || gamegrid[y][x+1] > 10){
+                        canMove = false;
+                    }
+                }
+            }
+        }
+        if (canMove) {
+            for(var y=gamegrid.length-1; y>=0; y--) {
+                for(var x=gamegrid[y].length; x>=0; x--) {
+                    if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                        gamegrid[y][x+1] = gamegrid[y][x];
+                        gamegrid[y][x] = 0;
+                    }
+                }
+            }
+           drawGame();
+        }
+    }
+
+
+    function freeze(){
+        for(var y=gamegrid.length-1; y>=0; y--) {
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x] > 0 && gamegrid[y][x] < 10 ){
+                    gamegrid[y][x] = gamegrid[y][x] + 10;
+                    
+                }
+            }
+        }
+        checkLines();     
+
+        for(var x = 0; x<gamegrid[0].length;x++)
+        { if(gamegrid[0][x]>10)
+            {   isGameOver = true;
+           drawGame(); }
+        } 
+
+        var ran = Math.floor(Math.random()*4);
+        if(ran === 0){
+            gamegrid[0]=[0,0,0,1,1,0,0,0];
+            gamegrid[1]=[0,0,0,1,1,0,0,0];
+        
+        } else if (ran === 1){
+            gamegrid[0] = [0,0,0,1,0,0,0,0];
+            gamegrid[1] = [0,0,0,1,0,0,0,0];
+            gamegrid[2] = [0,0,0,1,0,0,0,0];
+            gamegrid[3] = [0,0,0,1,0,0,0,0];
+        } else if (ran === 2){
+            gamegrid[0] = [0,0,0,1,1,0,0,0];
+            gamegrid[1] = [0,0,0,1,0,0,0,0];
+        } else if (ran === 3){
+            gamegrid[0] = [0,0,0,0,1,0,0,0];
+            gamegrid[1] = [0,0,0,1,1,0,0,0];
+        }
+    }
+
+    function checkLines(){
+        for(var y=gamegrid.length-1; y>=0; y--) {
+            fullLine = true;
+            for(var x=0; x<gamegrid[y].length; x++) {
+                if(gamegrid[y][x] < 10) {
+                    fullLine = false;
+                }
+            }
+            if (fullLine) {
+                gamegrid.splice(y, 1);
+                gamegrid.splice(0, 0, [0,0,0,0,0,0,0,0])
+                y++;
+            }
+        }
+    }
+
+    document.onkeydown = function(e) {
+        console.log(e)
+        if (!isGameOver && e.keyCode === 37){
+            moveShapesLeft(); 
+        } else if (!isGameOver && e.keyCode === 39){
+            moveShapesRight();
+        } else if (!isGameOver && e.keyCode === 40){
+            moveShapesDown();
+        }
+    }
+
+    function gameLoop(){
+        if(!isGameOver) {
+            moveShapesDown();
+           drawGame();
+            setTimeout(gameLoop, 1000);
+        }
+        else{
+            document.getElementById('gamegrid').innerHTML = "<div class='gameOver'><img src=\"gameover.png\"/><div class='refresh'> Click Refresh to play again</div></div>"
+        }
+    }
+   drawGame();
+    gameLoop();
+    
+
+</script>
