@@ -9,6 +9,7 @@
         height: 50px;
         display: inline-block;
     }
+    
     .squareShape {
         width: 50px;
         height: 50px;
@@ -17,12 +18,35 @@
         background-image: url('tetris-piece.png');
         display: inline-block;
     }
+    .game {
+        margin: auto;
+        height: 100%;
+    }
+    .score {
+        text-align: center;
+        width:100%;
+        margin-top: 50px;
+        color:bisque;
+        font-size: 60px;
+    }
+    .scoreValue{
+        text-align: center;
+        width:100%;
+        color:bisque;
+        font-size: 50px;
+    }
     #gamegrid {
         background-image: url('background.png');
         background-repeat: no-repeat;
         margin: auto;
     }
     .gameOver {
+        margin: auto;
+        background-color: #202021;
+        display: flex; 
+        flex-direction: column;
+    }
+    .gameOverImage {
         margin: auto;
     }
     .refresh {
@@ -37,8 +61,15 @@
 
 
 <!-- HTML Code -->
+<div class="game">
+    <div class='tetris'><img src="tetris.png">
+    <div class='score'> Score </div>
+    <div id='value' class='scoreValue'>0</div>
+</div>
+</div>
 <div id='gamegrid'>
 </div>
+<!-- </div> -->
 
 
 
@@ -58,7 +89,7 @@
         [0,0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0,0],
     ]; 
-
+    var score = 0;
     var isGameOver = false;
     function drawGame() {
         document.getElementById('gamegrid').innerHTML = "";
@@ -197,6 +228,8 @@
                 gamegrid.splice(y, 1);
                 gamegrid.splice(0, 0, [0,0,0,0,0,0,0,0])
                 y++;
+                score+=10;
+                document.getElementById('value').innerHTML = score;
             }
         }
     }
@@ -219,7 +252,7 @@
             setTimeout(gameLoop, 1000);
         }
         else{
-            document.getElementById('gamegrid').innerHTML = "<div class='gameOver'><img src=\"gameover.png\"/><div class='refresh'> Click Refresh to play again</div></div>"
+            document.getElementById('gamegrid').innerHTML = "<div class='gameOver'><img src=\"gameover.png\"/ class='gameOverImage'><div class='refresh'> Click Refresh to play again</div></div>"
         }
     }
    drawGame();
